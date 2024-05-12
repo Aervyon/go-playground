@@ -18,8 +18,8 @@ type User struct {
 
 type UserModel struct {
 	gorm.Model
-	IdBin    []byte `json:"idBin"`
-	ID       string `json:"id"`
+	IdBin    []byte `json:"idBin" gorm:"<-:create"`
+	ID       string `json:"ID" gorm:"unique;primaryKey;<-:create"`
 	Username string `json:"username"`
 	Password string `json:"-"`
 }

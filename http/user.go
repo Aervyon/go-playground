@@ -6,18 +6,66 @@ import (
 	"log"
 
 	"github.com/Aervyon/go-playground/utils"
+	"github.com/alexedwards/argon2id"
+	"github.com/go-chi/render"
 	"gorm.io/gorm"
 )
 
-func CreateUser(db *gorm.DB) http.HandlerFunc {
+func AuthUser(db *gorm.DB) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Add("Content-Type", "application/json")
 		err := r.ParseForm()
 		if err != nil {
+			w.WriteHeader(http.StatusBadRequest)
+			render.JSON(w, r, render.M{"code": http.StatusBadRequest, "message": "Failed to parse form"})
+			return
+		}
+
+		if !r.Form.Has("username") || !r.Form.Has("password") {
+			w.WriteHeader(http.StatusBadRequest)
+			render.JSON(w, r, render.M{"code": 400, "message": "Authentication requires username & password"})
+			return
+		}
+
+		username := r.Form.Get("username")
+		var user utils.UserModel
+		db.Model(&utils.UserModel{}).First(&user, "username = ?", username)
+		if user.ID == "" {
+			w.WriteHeader(http.StatusUnauthorized)
+			render.JSON(w, r, render.M{"code": http.StatusUnauthorized, "message": "Authentication Failed"})
+			return
+		}
+
+		match, _, err := argon2id.CheckHash(r.Form.Get("password"), user.Password)
+		if err != nil {
+			log.Println("Error checking user's", username, "hash:", err)
+			w.WriteHeader(http.StatusInternalServerError)
+			render.JSON(w, r, render.M{"code": http.StatusInternalServerError, "message": "Failed checking password", "error": err.Error()})
+			return
+		}
+
+		if !match {
+			w.WriteHeader(http.StatusUnauthorized)
+			render.JSON(w, r, render.M{"code": http.StatusUnauthorized, "message": "Authentication Failed"})
+			return
+		}
+
+		render.JSON(w, r, render.M{"code": 200, "message": "Not Implemented"})
+	}
+}
+
+func CreateUser(db *gorm.DB) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Add("Content-Type", "application/json")
+		err := r.ParseForm()
+		if err != nil {
+			w.WriteHeader(http.StatusBadRequest)
+			render.JSON(w, r, render.M{"code": http.StatusBadRequest, "message": "Failed to parse form"})
 			return
 		}
 		if !r.Form.Has("username") || !r.Form.Has("password") {
 			w.WriteHeader(http.StatusBadRequest)
-			w.Write([]byte("{ code: 400, message: \"Signup requires username and password\" }"))
+			render.JSON(w, r, render.M{"code": 400, "message": "Signup requires username & password"})
 			return
 		}
 
@@ -27,7 +75,7 @@ func CreateUser(db *gorm.DB) http.HandlerFunc {
 		db.Model(&utils.UserModel{}).Find(&existingUser, "username = ?", username)
 		if existingUser.ID != "" {
 			w.WriteHeader(http.StatusIMUsed)
-			w.Write([]byte("{ code: 226, message: \"Username or email taken\" }"))
+			render.JSON(w, r, render.M{"code": http.StatusIMUsed, "message": "Username or email taken"})
 			return
 		}
 
@@ -35,12 +83,28 @@ func CreateUser(db *gorm.DB) http.HandlerFunc {
 
 		if err != nil {
 			w.WriteHeader(http.StatusInternalServerError)
-			w.Write([]byte("{ code: 500, message: \"Failed to make user\" }"))
+			render.JSON(w, r, render.M{"code": http.StatusInternalServerError, "message": "Failed to make user"})
 			log.Println("Error saving user", username, "to db:", err.Error())
 			return
 		}
 
-		w.WriteHeader(http.StatusOK)
-		w.Write([]byte("{code: 200, message: \"Saved your info. Welcome " + user.Username + "!\"}"))
+		render.JSON(w, r, render.M{"code": http.StatusOK, "message": "Saved your info. Welcome " + user.Username})
+	}
+}
+
+func GetUsers(db *gorm.DB) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		users := []utils.UserModel{}
+		transaction := db.Model(&utils.UserModel{}).Find(&users, "")
+
+		if transaction.Error != nil {
+			w.WriteHeader(500)
+			render.JSON(w, r, render.M{"message": "Failed to get users", "code": 500, "error": transaction.Error.Error()})
+		}
+
+		if transaction.RowsAffected == 0 {
+			log.Println("Got 0 rows for users")
+		}
+		render.JSON(w, r, render.M{"message": "OK", "code": http.StatusOK, "users": users, "count": transaction.RowsAffected})
 	}
 }

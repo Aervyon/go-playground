@@ -10,18 +10,18 @@ import (
 )
 
 type User struct {
-	IdBin    ulid.ULID `json:"idBin"`
-	ID       string    `json:"id"`
-	Username string    `json:"username"`
-	Password string    `json:"-"`
+	IdBin    []byte `json:"idBin"`
+	ID       string `json:"id"`
+	Username string `json:"username"`
+	Password string `json:"-"`
 }
 
 type UserModel struct {
 	gorm.Model
-	IdBin    ulid.ULID `json:"idBin"`
-	ID       string    `json:"id"`
-	Username string    `json:"username"`
-	Password string    `json:"-"`
+	IdBin    []byte `json:"idBin"`
+	ID       string `json:"id"`
+	Username string `json:"username"`
+	Password string `json:"-"`
 }
 
 func (*UserModel) Render(w http.ResponseWriter, r *http.Request) error {
@@ -32,14 +32,17 @@ func CreateUser(db *gorm.DB, username, password string) (*UserModel, error) {
 	id := ulid.Make()
 	println(id.String())
 
-	hash, err := argon2id.CreateHash(password, &argon2id.Params{})
+	hash, err := argon2id.CreateHash(password, argon2id.DefaultParams)
 
 	if err != nil {
 		return &UserModel{}, err
 	}
 
-	user := &UserModel{IdBin: id, ID: id.String(), Password: hash, Username: username}
-	db.Create(user)
+	user := &UserModel{IdBin: id.Bytes(), ID: id.String(), Password: hash, Username: username}
+	transaction := db.Model(&UserModel{}).Create(user)
+	if transaction.Error != nil {
+		return &UserModel{}, transaction.Error
+	}
 	return user, nil
 }
 

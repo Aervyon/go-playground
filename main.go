@@ -5,6 +5,7 @@ import (
 	"log"
 	"net/http"
 
+	myHttp "github.com/Aervyon/go-playground/http"
 	"github.com/Aervyon/go-playground/utils"
 
 	"github.com/go-chi/chi/v5"
@@ -50,6 +51,8 @@ func main() {
 	r.Use(middleware.Recoverer)
 	r.Use(middleware.RequestID)
 	r.Use(middleware.Heartbeat("/health"))
+
+	r.Post("/signup", myHttp.CreateUser(db))
 
 	r.Get("/users", func(w http.ResponseWriter, r *http.Request) {
 		users := []utils.UserModel{}

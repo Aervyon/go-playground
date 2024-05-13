@@ -5,6 +5,7 @@ import (
 
 	"log"
 
+	"github.com/Aervyon/go-playground/models"
 	"github.com/Aervyon/go-playground/utils"
 	"github.com/alexedwards/argon2id"
 	"github.com/go-chi/render"
@@ -50,7 +51,15 @@ func AuthUser(db *gorm.DB) http.HandlerFunc {
 			return
 		}
 
-		render.JSON(w, r, render.M{"code": 200, "message": "Not Implemented"})
+		token := models.NewToken(user.ID)
+
+		transaction := db.Model(&models.Token{}).Create(token)
+		if transaction.Error != nil {
+			w.WriteHeader(http.StatusInternalServerError)
+			render.JSON(w, r, render.M{"code": http.StatusInternalServerError, "message": "access token generation failed"})
+		}
+
+		render.JSON(w, r, render.M{"code": 201, "message": "Created Token", "token": token.Token, "tokenType": "Bearer"})
 	}
 }
 

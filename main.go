@@ -5,10 +5,12 @@ import (
 	"net/http"
 
 	myHttp "github.com/Aervyon/go-playground/http"
+	"github.com/Aervyon/go-playground/models"
 	"github.com/Aervyon/go-playground/utils"
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
+	"github.com/go-chi/cors"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 )
@@ -42,17 +44,36 @@ func main() {
 
 	// Do migrations
 	db.AutoMigrate(&utils.UserModel{})
+	db.AutoMigrate(&models.Token{})
+
+	// tokens := []models.Token{}
 
 	r := chi.NewRouter()
-	log.Println("Using middlewares: Logger, recoverer, requestID, and heartbeat")
+	log.Println("Using middlewares: Logger, recoverer, requestID, CORS, and heartbeat")
 	r.Use(middleware.Logger)
 	r.Use(middleware.Recoverer)
 	r.Use(middleware.RequestID)
 	r.Use(middleware.Heartbeat("/health"))
+	r.Use(cors.Handler(cors.Options{
+		AllowedOrigins: []string{"http://*", "https://*"},
+		AllowedMethods: []string{"GET", "POST", "DELETE", "OPTIONS"},
+		AllowedHeaders: []string{
+			"User-Agent",
+			"Host",
+			"Referer",
+			"Origin",
+			"Cache-Control",
+			"Accept",
+			"Authorization",
+			"Content-Type",
+			"X-CSRF-Token",
+		},
+		AllowCredentials: true,
+	}))
 
 	// user stuffs
 	r.Post("/signup", myHttp.CreateUser(db))
-	r.Post("/auth", myHttp.AuthUser(db))
+	// r.Post("/auth", myHttp.AuthUser(db))
 	r.Get("/users", myHttp.GetUsers(db))
 
 	log.Println("Listening on port 3457")

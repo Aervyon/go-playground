@@ -2,6 +2,7 @@ package utils
 
 import (
 	"fmt"
+	"log"
 	"net/http"
 
 	"github.com/alexedwards/argon2id"
@@ -30,7 +31,6 @@ func (*UserModel) Render(w http.ResponseWriter, r *http.Request) error {
 
 func CreateUser(db *gorm.DB, username, password string) (*UserModel, error) {
 	id := ulid.Make()
-	println(id.String())
 
 	hash, err := argon2id.CreateHash(password, argon2id.DefaultParams)
 
@@ -43,6 +43,7 @@ func CreateUser(db *gorm.DB, username, password string) (*UserModel, error) {
 	if transaction.Error != nil {
 		return &UserModel{}, transaction.Error
 	}
+	log.Println("Created user", username)
 	return user, nil
 }
 

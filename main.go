@@ -46,8 +46,6 @@ func main() {
 	db.AutoMigrate(&utils.UserModel{})
 	db.AutoMigrate(&models.Token{})
 
-	// tokens := []models.Token{}
-
 	r := chi.NewRouter()
 	log.Println("Using middlewares: Logger, recoverer, requestID, CORS, and heartbeat")
 	r.Use(middleware.Logger)
@@ -73,7 +71,7 @@ func main() {
 
 	// user stuffs
 	r.Post("/signup", myHttp.CreateUser(db))
-	// r.Post("/auth", myHttp.AuthUser(db))
+	r.Post("/auth", myHttp.AuthUser(db))
 	r.Get("/users", myHttp.GetUsers(db))
 
 	log.Println("Listening on port 3457")

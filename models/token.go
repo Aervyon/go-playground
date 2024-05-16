@@ -19,6 +19,7 @@ type Token struct {
 	CreatedAt time.Time
 	UpdatedAt time.Time
 	DeletedAt gorm.DeletedAt
+	ExpiresAt time.Time
 }
 
 /*
@@ -66,12 +67,14 @@ func NewToken(uid string) *Token {
 		panic(err)
 	}
 
+	expires := time.Now().Add(time.Hour * 24 * 2)
 	t := &Token{
 		Token:     token,
 		ID:        id.String(),
 		UID:       uid,
 		Hash:      hash,
 		CreatedAt: time.Now(),
+		ExpiresAt: expires,
 	}
 
 	t.UpdatedAt = t.CreatedAt

@@ -13,6 +13,9 @@ import (
 	"github.com/go-chi/cors"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
+
+	"github.com/alexedwards/scs/gormstore"
+	"github.com/alexedwards/scs/v2"
 )
 
 func main() {
@@ -41,6 +44,11 @@ func main() {
 	}
 
 	log.Println("Connected to database")
+
+	sessionManager := scs.New()
+	if sessionManager.Store, err = gormstore.New(db); err != nil {
+		log.Fatal(err)
+	}
 
 	// Do migrations
 	db.AutoMigrate(&utils.UserModel{})
@@ -71,11 +79,11 @@ func main() {
 
 	// user stuffs
 	r.Post("/signup", myHttp.CreateUser(db))
-	r.Post("/auth", myHttp.AuthUser(db))
+	r.Post("/auth", myHttp.AuthUser(db, sessionManager))
 	r.Get("/users", myHttp.GetUsers(db))
 
 	log.Println("Listening on port 3457")
-	http.ListenAndServe(":3457", r)
+	http.ListenAndServe(":3457", sessionManager.LoadAndSave(r))
 }
 
 /*func UsersResponse(users []*utils.UserModel) []render.Renderer {

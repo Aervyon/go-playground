@@ -80,6 +80,7 @@ func main() {
 	// user stuffs
 	r.Post("/signup", myHttp.CreateUser(db))
 	r.Post("/auth", myHttp.AuthUser(db, sessionManager))
+	r.Get("/account", myHttp.GetSelfAccount(db, sessionManager))
 	r.Get("/users", myHttp.GetUsers(db))
 
 	log.Println("Listening on port 3457")

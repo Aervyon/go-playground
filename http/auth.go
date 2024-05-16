@@ -4,7 +4,6 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/Aervyon/go-playground/models"
 	"github.com/Aervyon/go-playground/utils"
 	"github.com/alexedwards/argon2id"
 	"github.com/alexedwards/scs/v2"
@@ -32,7 +31,7 @@ func AuthUser(db *gorm.DB, sessionManager *scs.SessionManager) http.HandlerFunc 
 		db.Model(&utils.UserModel{}).First(&user, "username = ?", username)
 		if user.ID == "" {
 			w.WriteHeader(http.StatusUnauthorized)
-			render.JSON(w, r, render.M{"code": http.StatusUnauthorized, "message": "Authentication Failed"})
+			render.JSON(w, r, ResponseUnauthorized)
 			return
 		}
 
@@ -46,20 +45,12 @@ func AuthUser(db *gorm.DB, sessionManager *scs.SessionManager) http.HandlerFunc 
 
 		if !match {
 			w.WriteHeader(http.StatusUnauthorized)
-			render.JSON(w, r, render.M{"code": http.StatusUnauthorized, "message": "Authentication Failed"})
+			render.JSON(w, r, ResponseUnauthorized)
 			return
-		}
-
-		token := models.NewToken(user.ID)
-
-		transaction := db.Model(&models.Token{}).Create(token)
-		if transaction.Error != nil {
-			w.WriteHeader(http.StatusInternalServerError)
-			render.JSON(w, r, render.M{"code": http.StatusInternalServerError, "message": "access token generation failed"})
 		}
 
 		sessionManager.Put(r.Context(), "session", user.ID)
 
-		render.JSON(w, r, render.M{"code": 201, "message": "Created Token", "token": token.Token, "tokenType": "Bearer"})
+		render.JSON(w, r, render.M{"code": http.StatusOK, "message": "Authenticated for sessions"})
 	}
 }

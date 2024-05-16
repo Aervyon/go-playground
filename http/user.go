@@ -12,6 +12,10 @@ import (
 	"gorm.io/gorm"
 )
 
+var (
+	ResponseUnauthorized = render.M{"code": http.StatusUnauthorized, "message": "Unauthorized"}
+)
+
 func CreateUser(db *gorm.DB) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Add("Content-Type", "application/json")
@@ -55,7 +59,7 @@ func GetSelfAccount(db *gorm.DB, session *scs.SessionManager) http.HandlerFunc {
 		uid := session.GetString(r.Context(), "session")
 		if uid == "" {
 			w.WriteHeader(http.StatusUnauthorized)
-			render.JSON(w, r, render.M{"code": http.StatusUnauthorized, "message": "unauthorized"})
+			render.JSON(w, r, ResponseUnauthorized)
 			return
 		}
 

@@ -1,4 +1,4 @@
-package http
+package endpoints
 
 import (
 	"errors"
@@ -6,7 +6,8 @@ import (
 
 	"log"
 
-	"github.com/Aervyon/go-playground/utils"
+	"github.com/Aervyon/go-playground/database"
+	"github.com/Aervyon/go-playground/models"
 	"github.com/alexedwards/scs/v2"
 	"github.com/go-chi/render"
 	"gorm.io/gorm"
@@ -33,15 +34,15 @@ func CreateUser(db *gorm.DB) http.HandlerFunc {
 
 		username := r.Form.Get("username")
 		password := r.Form.Get("password")
-		existingUser := &utils.UserModel{}
-		db.Model(&utils.UserModel{}).Find(&existingUser, "username = ?", username)
+		existingUser := &models.UserModel{}
+		db.Model(&models.UserModel{}).Find(&existingUser, "username = ?", username)
 		if existingUser.ID != "" {
 			w.WriteHeader(http.StatusIMUsed)
 			render.JSON(w, r, render.M{"code": http.StatusIMUsed, "message": "Username or email taken"})
 			return
 		}
 
-		user, err := utils.CreateUser(db, username, password)
+		user, err := database.CreateUser(db, username, password)
 
 		if err != nil {
 			w.WriteHeader(http.StatusInternalServerError)
@@ -63,8 +64,8 @@ func GetSelfAccount(db *gorm.DB, session *scs.SessionManager) http.HandlerFunc {
 			return
 		}
 
-		var user utils.UserModel
-		transaction := db.Model(&utils.UserModel{}).Limit(1).Find(&user, "ID = ?", uid)
+		var user models.UserModel
+		transaction := db.Model(&models.UserModel{}).Limit(1).Find(&user, "ID = ?", uid)
 		if transaction.Error != nil && errors.Is(transaction.Error, gorm.ErrRecordNotFound) {
 			log.Println("No record found for authentication user", uid)
 			w.WriteHeader(http.StatusNotFound)
@@ -94,8 +95,8 @@ func GetSelfAccount(db *gorm.DB, session *scs.SessionManager) http.HandlerFunc {
 
 func GetUsers(db *gorm.DB) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		users := []utils.UserModel{}
-		transaction := db.Model(&utils.UserModel{}).Find(&users, "")
+		users := []models.UserModel{}
+		transaction := db.Model(&models.UserModel{}).Find(&users, "")
 
 		if transaction.Error != nil {
 			w.WriteHeader(500)

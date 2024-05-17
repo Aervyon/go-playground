@@ -1,10 +1,10 @@
-package http
+package endpoints
 
 import (
 	"log"
 	"net/http"
 
-	"github.com/Aervyon/go-playground/utils"
+	"github.com/Aervyon/go-playground/models"
 	"github.com/alexedwards/argon2id"
 	"github.com/alexedwards/scs/v2"
 	"github.com/go-chi/render"
@@ -27,8 +27,8 @@ func AuthUser(db *gorm.DB, sessionManager *scs.SessionManager) http.HandlerFunc 
 		}
 
 		username := r.Form.Get("username")
-		var user utils.UserModel
-		db.Model(&utils.UserModel{}).First(&user, "username = ?", username)
+		var user models.UserModel
+		db.Model(&models.UserModel{}).First(&user, "username = ?", username)
 		if user.ID == "" {
 			w.WriteHeader(http.StatusUnauthorized)
 			render.JSON(w, r, ResponseUnauthorized)

@@ -4,9 +4,8 @@ import (
 	"log"
 	"net/http"
 
-	myHttp "github.com/Aervyon/go-playground/http"
+	"github.com/Aervyon/go-playground/endpoints"
 	"github.com/Aervyon/go-playground/models"
-	"github.com/Aervyon/go-playground/utils"
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
@@ -51,7 +50,7 @@ func main() {
 	}
 
 	// Do migrations
-	db.AutoMigrate(&utils.UserModel{})
+	db.AutoMigrate(&models.UserModel{})
 	db.AutoMigrate(&models.Token{})
 
 	r := chi.NewRouter()
@@ -78,19 +77,11 @@ func main() {
 	}))
 
 	// user stuffs
-	r.Post("/signup", myHttp.CreateUser(db))
-	r.Post("/auth", myHttp.AuthUser(db, sessionManager))
-	r.Get("/account", myHttp.GetSelfAccount(db, sessionManager))
-	r.Get("/users", myHttp.GetUsers(db))
+	r.Post("/signup", endpoints.CreateUser(db))
+	r.Post("/auth", endpoints.AuthUser(db, sessionManager))
+	r.Get("/account", endpoints.GetSelfAccount(db, sessionManager))
+	r.Get("/users", endpoints.GetUsers(db))
 
 	log.Println("Listening on port 3457")
 	http.ListenAndServe(":3457", sessionManager.LoadAndSave(r))
 }
-
-/*func UsersResponse(users []*utils.UserModel) []render.Renderer {
-	list := []render.Renderer{}
-
-	for _, user := range users {
-		list = append(list, &utils.User{Username: user.Username})
-	}
-}*/

@@ -21,6 +21,10 @@ tmp/
 # executable
 go-playground
 
+# frontend dependencies
+
+frontend/node_modules
+
 # Dependency directories (remove the comment below to include it)
 # vendor/
 

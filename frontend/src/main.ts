@@ -2,17 +2,24 @@ import { createApp } from 'vue'
 import './style.css'
 import App from './App.vue'
 import Index from './pages/index.vue'
-import { createMemoryHistory, createRouter } from 'vue-router'
+import Login from './pages/login.vue'
+import { createWebHistory, createRouter } from 'vue-router'
 
 const routes = [
     {
         path: '/', component: Index,
+    },
+    {
+        
+        path: '/login', component: Login
     }
 ]
 
 const router = createRouter({
-    history: createMemoryHistory(),
+    history: createWebHistory(),
     routes,
 })
 
-createApp(App).use(router).mount('#app')
+const app = createApp(App)
+app.use(router)
+app.mount('#app')

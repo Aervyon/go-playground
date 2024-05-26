@@ -11,7 +11,7 @@
                     <li>
                         <p class="text-neutral">Login or Signup</p>
                         <ul class="p-2">
-                            <li><a href="/login">Login</a></li>
+                            <li><RouterLink to="/login">Login</RouterLink></li>
                             <li><a href="/signup">Signup</a></li>
                         </ul>
                     </li>
@@ -21,8 +21,8 @@
             </div>
             <div class="navbar-end hidden sm:flex">
                 <div class="menu menu-horizontal text-lg text-link items-center space-x-2">
-                    <li><a href="/about" class="hover:text-text">About</a></li>
-                    <li><a href="/login" class="btn btn-accent">Login</a></li>
+                    <li><RouterLink to="/about" class="hover:text-text">About</RouterLink></li>
+                    <li><RouterLink to="/login" class="btn btn-accent">Login</RouterLink></li>
                 </div>
             </div>
         </nav>

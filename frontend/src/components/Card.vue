@@ -2,7 +2,7 @@
     <div class="p-4 card bg-secondary max-w-[512px] my-auto text-text-2 shadow-lg">
         <div class="card-body">
             <div class="w-full items-center" :class="{
-                'flex space-x-4': item.length + (user?.length ?? 14) <= 40,
+                'lg:flex lg:space-x-4 space-y-2 lg:space-y-0': item.length + (user?.length ?? 14) <= 40,
                 'space-y-2': item.length + (user?.length ?? 14) > 40
             }">
                 <h1 class="text-accent text-xl font-bold w-fit card-title">{{ user ?? 'Anonymous User' }}</h1>

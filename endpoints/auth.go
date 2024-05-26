@@ -17,6 +17,7 @@ func AuthUser(db *gorm.DB, sessionManager *scs.SessionManager) http.HandlerFunc 
 		if err != nil {
 			w.WriteHeader(http.StatusBadRequest)
 			render.JSON(w, r, render.M{"code": http.StatusBadRequest, "message": "Failed to parse form"})
+			log.Print(err.Error())
 			return
 		}
 

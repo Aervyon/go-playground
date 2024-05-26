@@ -77,10 +77,10 @@ func main() {
 	}))
 
 	// user stuffs
-	r.Post("/signup", endpoints.CreateUser(db))
-	r.Post("/auth", endpoints.AuthUser(db, sessionManager))
-	r.Get("/account", endpoints.GetSelfAccount(db, sessionManager))
-	r.Get("/users", endpoints.GetUsers(db))
+	r.Post("/api/signup", endpoints.CreateUser(db))
+	r.Post("/api/auth", endpoints.AuthUser(db, sessionManager))
+	r.Get("/api/account", endpoints.GetSelfAccount(db, sessionManager))
+	r.Get("/api/users", endpoints.GetUsers(db))
 
 	log.Println("Listening on port 3457")
 	http.ListenAndServe(":3457", sessionManager.LoadAndSave(r))

@@ -21,6 +21,7 @@ export default {
     "./src/**/*.{vue,js,ts,jsx,tsx}",
   ],
   theme: {
+    extend: {
       colors: {
         bg: '#372F42',
         'bg-darker': '#2B2533',
@@ -34,7 +35,8 @@ export default {
         placeholder: '#777777',
         input: '#2B2533'
       
-    },
+      },
+    }
   },
   plugins: [
     require('daisyui')

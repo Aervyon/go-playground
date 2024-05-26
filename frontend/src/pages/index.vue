@@ -10,7 +10,7 @@
                     </div>
                     <div>
                         <p class="text-lg">Title Of Card 1</p>
-                        <Card />
+                        <Card :index="0" item="Nebula | Simple Bust" user="Anonymous Artist" data="Communication" data2="Understanding" info="A bit hard to understand but otherwise a good client with reasonable expectations"/>
                     </div>
                 </div>
                 <div class="flex flex-col lg:flex-row justify-between w-full lg:mt-20">
@@ -20,7 +20,7 @@
                     </div>
                     <div>
                         <p class="text-lg">Title Of Card 2</p>
-                        <Card />
+                        <Card :index="2" item="Anonymous Artist | Simple" user="Nebula" data="Communication" data2="Understanding" info="A bit hard to understand but otherwise amazing work with great style choices and reasonable prices"/>
                     </div>
                 </div>
             </div>

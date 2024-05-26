@@ -1,6 +1,6 @@
 <template>
     <header>
-        <nav class="navbar bg-bg-darker drop-shadow-md">
+        <nav class="navbar bg-bg shadow-md">
             <div class="navbar-start">
                 <div class="dropdown">
                     <button tabindex="0" role="button" class="btn btn-ghost sm:hidden">

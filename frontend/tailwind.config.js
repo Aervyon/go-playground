@@ -25,6 +25,7 @@ export default {
         bg: '#372F42',
         'bg-darker': '#2B2533',
         text: '#FCF4C5',
+        'text-2': '#B2AD8D',
         accent: '#76EA7C',
         'accent-darker': '#448D48',
         'accent-2': '#ED373A',

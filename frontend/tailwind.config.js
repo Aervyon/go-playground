@@ -1,13 +1,26 @@
 /** @type {import('tailwindcss').Config} */
 export default {
+  daisyui: {
+    themes: [
+      {
+        default: {
+          "primary": "#372F42",
+          "secondary": "#2B2533",
+          "base-100": "#372F42",
+          "neutral": "#FCF4C5",
+          "accent": "#76EA7C",
+          "success": "#76EA7C",
+          "error": "#ED373A"
+        }
+      }
+    ]
+  },
   content: [
     './index.html',
     './src/**/*.{html,js,vue,ts}',
     "./src/**/*.{vue,js,ts,jsx,tsx}",
-    'node_modules/preline/dist/*.js'
   ],
   theme: {
-    extend: {
       colors: {
         bg: '#372F42',
         'bg-darker': '#2B2533',
@@ -19,12 +32,11 @@ export default {
         link: '#DADADA',
         placeholder: '#777777',
         input: '#2B2533'
-      }
       
     },
   },
   plugins: [
-    require('preline/plugin')
+    require('daisyui')
   ],
 }
 

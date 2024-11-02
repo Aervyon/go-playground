@@ -8,6 +8,7 @@ jobs:
         os: ["ubuntu-latest"]
         goarch: [amd64, arm64]
         goos: [windows, linux]
+        goversion: ['1.23.x']
     runs-on: ${{ matrix.os }}
 
     steps:
@@ -15,7 +16,7 @@ jobs:
       - name: Setup Go
         uses: actions/setup-go@v4
         with:
-          go-version: '1.23.x'
+          go-version: ${{ matrix.goversion }}
       - name: Install dependencies
         run: go get .
       - name: Build ${{ matrix.goos }} ${{ matrix.goarch }}

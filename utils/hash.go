@@ -21,7 +21,7 @@ func hashingCPUs() uint8 {
 func determineMemory() uint32 {
 	mem := sigar.Mem{}
 	mem.Get()
-	// return the total memory in KB
+	// Get the gigabytes of memory the system has
 	totalGB := mem.Total / 1024 / 1024 / 1000
 
 	const base = 64 * 1024 // 64MB in KB

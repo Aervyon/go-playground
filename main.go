@@ -6,6 +6,7 @@ import (
 
 	"github.com/Aervyon/go-playground/endpoints"
 	"github.com/Aervyon/go-playground/models"
+	"github.com/Aervyon/go-playground/utils"
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
@@ -18,6 +19,13 @@ import (
 )
 
 func main() {
+	log.Printf(
+		"Using %d core(s), %dMB RAM, and %d iterations per password for hashing",
+		utils.HashParams.Parallelism,
+		utils.HashParams.Memory/1024,
+		utils.HashParams.Iterations,
+	)
+
 	databaseType := "sqlite-mem"
 
 	var dbDriver gorm.Dialector

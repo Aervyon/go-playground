@@ -8,6 +8,7 @@ import (
 	"log"
 
 	"github.com/Aervyon/go-playground/models"
+	"github.com/Aervyon/go-playground/utils"
 	"github.com/alexedwards/argon2id"
 	"github.com/oklog/ulid/v2"
 	"gorm.io/gorm"
@@ -16,7 +17,7 @@ import (
 func CreateUser(db *gorm.DB, username, password string) (*models.UserModel, error) {
 	id := ulid.Make()
 
-	hash, err := argon2id.CreateHash(password, argon2id.DefaultParams)
+	hash, err := argon2id.CreateHash(password, utils.HashParams)
 
 	if err != nil {
 		return &models.UserModel{}, err

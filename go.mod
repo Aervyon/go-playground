@@ -16,9 +16,11 @@ require (
 	github.com/ajg/form v1.5.1 // indirect
 	github.com/alexedwards/scs/gormstore v0.0.0-20240316134038-7e11d57e8885 // indirect
 	github.com/alexedwards/scs/v2 v2.8.0 // indirect
+	github.com/cloudfoundry/gosigar v1.3.75 // indirect
 	github.com/jinzhu/inflection v1.0.0 // indirect
 	github.com/jinzhu/now v1.1.5 // indirect
 	github.com/mattn/go-sqlite3 v1.14.22 // indirect
+	github.com/pkg/errors v0.9.1 // indirect
 	golang.org/x/crypto v0.23.0 // indirect
-	golang.org/x/sys v0.20.0 // indirect
+	golang.org/x/sys v0.26.0 // indirect
 )

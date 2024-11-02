@@ -7,7 +7,14 @@ import (
 	sigar "github.com/cloudfoundry/gosigar"
 )
 
-var minCPUs = 4
+const (
+	minCPUs              = 4
+	minIterations        = 3
+	reasonableIterations = 6
+	reasonableMemory     = 64 * 1024 // 64MB in KB
+	saltLength           = 16
+	keyLength            = 32
+)
 
 // We want to leave a thread left over for the OS to use.
 // Hopefully this will prevent the OS from killing the process.
@@ -24,11 +31,11 @@ func determineMemory() uint32 {
 	// Get the gigabytes of memory the system has
 	totalGB := mem.Total / 1024 / 1024 / 1000
 
-	const base = 64 * 1024 // 64MB in KB
+	// If the system has less than 1GB of memory, use a reasonable amount of memory
 	if totalGB <= 1 {
-		return uint32(base)
+		return uint32(reasonableMemory)
 	}
-	return uint32(totalGB * base / 2) // 32MB per GB
+	return uint32(totalGB * reasonableMemory / 2) // 32MB per GB
 }
 
 // Baseline of 3 iterations
@@ -37,7 +44,7 @@ func determineMemory() uint32 {
 func determineIterations() uint32 {
 	cpus := hashingCPUs()
 	if cpus <= 1 {
-		return 3
+		return minIterations
 	}
 
 	if cpus <= 6 {
@@ -57,7 +64,7 @@ func determineIterations() uint32 {
 var HashParams = &argon2id.Params{
 	Memory:      determineMemory(),
 	Iterations:  determineIterations(),
-	SaltLength:  16,
-	KeyLength:   32,
+	SaltLength:  saltLength,
+	KeyLength:   keyLength,
 	Parallelism: hashingCPUs(),
 }

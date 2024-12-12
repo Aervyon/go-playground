@@ -4,6 +4,9 @@ go 1.22.0
 
 require (
 	github.com/alexedwards/argon2id v1.0.0
+	github.com/alexedwards/scs/gormstore v0.0.0-20240316134038-7e11d57e8885
+	github.com/alexedwards/scs/v2 v2.8.0
+	github.com/cloudfoundry/gosigar v1.3.75
 	github.com/go-chi/chi/v5 v5.0.12
 	github.com/go-chi/cors v1.2.1
 	github.com/go-chi/render v1.0.3
@@ -14,13 +17,10 @@ require (
 
 require (
 	github.com/ajg/form v1.5.1 // indirect
-	github.com/alexedwards/scs/gormstore v0.0.0-20240316134038-7e11d57e8885 // indirect
-	github.com/alexedwards/scs/v2 v2.8.0 // indirect
-	github.com/cloudfoundry/gosigar v1.3.75 // indirect
 	github.com/jinzhu/inflection v1.0.0 // indirect
 	github.com/jinzhu/now v1.1.5 // indirect
 	github.com/mattn/go-sqlite3 v1.14.22 // indirect
 	github.com/pkg/errors v0.9.1 // indirect
-	golang.org/x/crypto v0.23.0 // indirect
-	golang.org/x/sys v0.26.0 // indirect
+	golang.org/x/crypto v0.31.0 // indirect
+	golang.org/x/sys v0.28.0 // indirect
 )
